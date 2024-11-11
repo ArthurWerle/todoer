@@ -1,26 +1,47 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { TaskTreeProvider } from './taskTreeProvider';
+import { TaskManager } from './taskManager';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+    const taskManager = new TaskManager(context);
+    const treeProvider = new TaskTreeProvider(taskManager);
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "todoer" is now active!');
+    vscode.window.registerTreeDataProvider('taskManager', treeProvider);
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('todoer.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from todoer!');
-	});
+    context.subscriptions.push(
+        vscode.commands.registerCommand('taskManager.addTask', async () => {
+            const taskTitle = await vscode.window.showInputBox({
+                placeHolder: 'title'
+            });
+            
+            if (taskTitle) {
+                const description = await vscode.window.showInputBox({
+                    placeHolder: 'description (optional)'
+                });
+                
+                taskManager.addTask(taskTitle, description || '');
+                treeProvider.refresh();
+            }
+        })
+    );
 
-	context.subscriptions.push(disposable);
+    context.subscriptions.push(
+        vscode.commands.registerCommand('taskManager.toggleTask', (taskId: string) => {
+            taskManager.toggleTask(taskId);
+            treeProvider.refresh();
+        })
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('taskManager.deleteTask', (taskId: string) => {
+            taskManager.deleteTask(taskId);
+            treeProvider.refresh();
+        })
+    );
+
+	context.subscriptions.push(
+        vscode.commands.registerCommand('taskManager.refresh', () => {
+            treeProvider.refresh();
+        })
+    );
 }
-
-// This method is called when your extension is deactivated
-export function deactivate() {}
