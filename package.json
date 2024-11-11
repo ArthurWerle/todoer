@@ -5,6 +5,10 @@
   "version": "0.0.1",
   "icon": "media/icon.png",
   "publisher": "arthurwerle",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArthurWerle/todoer"
+  },
   "pricing": "Free",
   "engines": {
       "vscode": "^1.85.0"
