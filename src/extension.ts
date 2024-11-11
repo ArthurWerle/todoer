@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { TaskTreeProvider } from './taskTreeProvider';
-import { TaskManager } from './taskManager';
+import { Task, TaskManager } from './taskManager';
 
 export function activate(context: vscode.ExtensionContext) {
     const taskManager = new TaskManager(context);
@@ -33,8 +33,8 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     context.subscriptions.push(
-        vscode.commands.registerCommand('taskManager.deleteTask', (taskId: string) => {
-            taskManager.deleteTask(taskId);
+        vscode.commands.registerCommand('taskManager.deleteTask', (task: Task) => {
+            taskManager.deleteTask(task.id);
             treeProvider.refresh();
         })
     );

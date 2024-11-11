@@ -3,7 +3,9 @@
   "displayName": "todoer",
   "description": "Personal task manager",
   "version": "0.0.1",
+  "icon": "media/icon.png",
   "publisher": "arthurwerle",
+  "pricing": "Free",
   "engines": {
       "vscode": "^1.85.0"
   },
